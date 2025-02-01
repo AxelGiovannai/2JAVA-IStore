@@ -1,4 +1,6 @@
 package user.entity;
 
-public class RoleEnum {
+public enum RoleEnum {
+    ADMIN,
+    EMPLOYEE
 }

@@ -1,11 +1,16 @@
 package ui.auth;
 
+import service.RegistrationService;
+import whitelist.WhitelistService;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class RegisterPanel extends JPanel {
+    private final RegistrationService registrationService;
 
-    public RegisterPanel() {
+    public RegisterPanel(WhitelistService whitelistService, Runnable onBack) {
+        this.registrationService = new RegistrationService(whitelistService);
         setLayout(new GridBagLayout());
         setBackground(Color.DARK_GRAY);
 
@@ -40,6 +45,18 @@ public class RegisterPanel extends JPanel {
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         add(registerButton, gbc);
+
+        JButton backButton = new JButton("Back");
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.anchor = GridBagConstraints.CENTER;
+        add(backButton, gbc);
+
+        backButton.addActionListener(e -> onBack.run());
+        registerButton.addActionListener(e -> {
+            String email = emailField.getText();
+            String password = new String(passField.getPassword());
+            registrationService.register(email, password);
+        });
     }
 }
-

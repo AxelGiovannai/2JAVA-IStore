@@ -2,10 +2,11 @@ package ui.auth;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.function.Consumer;
 
 public class LoginPanel extends JPanel {
 
-    public LoginPanel() {
+    public LoginPanel(Runnable onBack) {
         setLayout(new GridBagLayout());
         setBackground(Color.DARK_GRAY);
 
@@ -13,7 +14,7 @@ public class LoginPanel extends JPanel {
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JLabel userLabel = new JLabel("Username:");
+        JLabel userLabel = new JLabel("Email:");
         userLabel.setForeground(Color.WHITE);
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -40,6 +41,13 @@ public class LoginPanel extends JPanel {
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         add(loginButton, gbc);
+
+        JButton backButton = new JButton("Back");
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.anchor = GridBagConstraints.CENTER;
+        add(backButton, gbc);
+
+        backButton.addActionListener(e -> onBack.run());
     }
 }
-
