@@ -1,4 +1,6 @@
 package whitelist.dao;
 
-public class WhitelistDao {
+
+public interface WhitelistDao {
+
 }

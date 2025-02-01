@@ -42,3 +42,4 @@ public class LoginPanel extends JPanel {
         add(loginButton, gbc);
     }
 }
+
