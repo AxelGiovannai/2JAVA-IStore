@@ -10,18 +10,12 @@ import javax.swing.*;
 public class Main {
     public static void main(String[] args) {
         // Configuration Hibernate
+        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
 
-        // Ouvrir une session
-        try (SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory(); Session session = sessionFactory.openSession()) {
-            System.out.println("Connexion à la base de données réussie !");
-        } catch (Exception e) {
-            System.err.println("Erreur lors de la connexion à la base de données : " + e.getMessage());
-            e.printStackTrace();
-        }
 
         // Lancer l'interface utilisateur
         SwingUtilities.invokeLater(() -> {
-            MainFrame mainFrame = new MainFrame();
+            MainFrame mainFrame = new MainFrame(sessionFactory);
             mainFrame.setVisible(true);
         });
     }

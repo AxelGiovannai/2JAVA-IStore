@@ -1,6 +1,7 @@
 package ui.auth;
 
 import service.RegistrationService;
+import user.entity.UserEntity;
 import whitelist.WhitelistService;
 
 import javax.swing.*;
@@ -9,8 +10,8 @@ import java.awt.*;
 public class RegisterPanel extends JPanel {
     private final RegistrationService registrationService;
 
-    public RegisterPanel(WhitelistService whitelistService, Runnable onBack) {
-        this.registrationService = new RegistrationService(whitelistService);
+    public RegisterPanel(WhitelistService whitelistService, Runnable onBack, UserEntity userService) {
+        this.registrationService = new RegistrationService(whitelistService,userService);
         setLayout(new GridBagLayout());
         setBackground(Color.DARK_GRAY);
 

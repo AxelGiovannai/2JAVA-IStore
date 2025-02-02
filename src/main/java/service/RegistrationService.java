@@ -10,7 +10,7 @@ public class RegistrationService {
     private final WhitelistService whitelistService;
     private final UserService userService;
 
-    public RegistrationService(WhitelistService whitelistService) {
+    public RegistrationService(WhitelistService whitelistService, UserService userService) {
         this.whitelistService = whitelistService;
         this.userService = userService;
     }

@@ -2,13 +2,20 @@ package ui;
 
 import ui.auth.LoginPanel;
 import ui.auth.RegisterPanel;
-
+import user.entity.UserEntity;
+import whitelist.WhitelistService;
+import whitelist.dao.WhitelistDaoImpl;
+import org.hibernate.SessionFactory;
 import javax.swing.*;
 import java.awt.*;
 
 public class MainFrame extends JFrame {
 
-    public MainFrame() {
+    private static SessionFactory sessionFactory;
+    private UserEntity UserEntity;
+
+    public MainFrame(SessionFactory sessionFactory) {
+        MainFrame.sessionFactory = sessionFactory;
         setTitle("IStore Application");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -46,9 +53,11 @@ public class MainFrame extends JFrame {
         repaint();
     }
 
+
     private void showRegisterPanel() {
+        WhitelistService whitelistService = new WhitelistService(new WhitelistDaoImpl(sessionFactory));
         getContentPane().removeAll();
-        add(new RegisterPanel(this::showMainPanel), BorderLayout.CENTER);
+        add(new RegisterPanel(whitelistService, this::showMainPanel, UserEntity), BorderLayout.CENTER);
         revalidate();
         repaint();
     }
@@ -62,7 +71,7 @@ public class MainFrame extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            MainFrame mainFrame = new MainFrame();
+            MainFrame mainFrame = new MainFrame(sessionFactory);
             mainFrame.setVisible(true);
         });
     }
