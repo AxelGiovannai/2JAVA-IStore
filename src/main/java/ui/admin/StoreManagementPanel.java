@@ -1,4 +1,10 @@
+
 package ui.admin;
 
-public class StoreManagementPanel {
+import javax.swing.*;
+
+public class StoreManagementPanel extends JPanel {
+    public StoreManagementPanel() {
+        // Initialize components here
+    }
 }

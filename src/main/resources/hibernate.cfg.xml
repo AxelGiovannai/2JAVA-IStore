@@ -19,7 +19,7 @@
         <property name="hibernate.hikari.maximumPoolSize">20</property>
         <property name="hibernate.hikari.idleTimeout">30000</property>
 
-
+        <mapping class="user.entity.UserEntity"/>
         <mapping class="whitelist.entity.WhitelistedEmailEntity"/>
     </session-factory>
 </hibernate-configuration>

@@ -16,13 +16,22 @@ public class UserEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "pseudo", nullable = false)
+    private String pseudo;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private RoleEnum role;
 
     public UserEntity() {}
 
-    public UserEntity(String email, String password) {
+    public UserEntity(String email, String password, String pseudo, RoleEnum role) {
         this.email = email;
         this.password = password;
+        this.pseudo = pseudo;
+        this.role = role;
     }
+
 
     public int getId() {
         return id;
@@ -46,5 +55,21 @@ public class UserEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPseudo() {
+        return pseudo;
+    }
+
+    public void setPseudo(String pseudo) {
+        this.pseudo = pseudo;
+    }
+
+    public RoleEnum getRole() {
+        return role;
+    }
+
+    public void setRole(RoleEnum role) {
+        this.role = role;
     }
 }

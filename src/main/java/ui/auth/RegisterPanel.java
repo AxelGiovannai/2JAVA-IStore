@@ -1,7 +1,8 @@
+// src/main/java/ui/auth/RegisterPanel.java
 package ui.auth;
 
 import service.RegistrationService;
-import user.entity.UserEntity;
+import user.UserService;
 import whitelist.WhitelistService;
 
 import javax.swing.*;
@@ -10,8 +11,8 @@ import java.awt.*;
 public class RegisterPanel extends JPanel {
     private final RegistrationService registrationService;
 
-    public RegisterPanel(WhitelistService whitelistService, Runnable onBack, UserEntity userService) {
-        this.registrationService = new RegistrationService(whitelistService,userService);
+    public RegisterPanel(WhitelistService whitelistService, Runnable onBack, UserService userService) {
+        this.registrationService = new RegistrationService(whitelistService, userService);
         setLayout(new GridBagLayout());
         setBackground(Color.DARK_GRAY);
 
@@ -41,15 +42,26 @@ public class RegisterPanel extends JPanel {
         gbc.gridy = 1;
         add(passField, gbc);
 
-        JButton registerButton = new JButton("Register");
+        JLabel pseudoLabel = new JLabel("Pseudo:");
+        pseudoLabel.setForeground(Color.WHITE);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        add(pseudoLabel, gbc);
+
+        JTextField pseudoField = new JTextField(20);
         gbc.gridx = 1;
         gbc.gridy = 2;
+        add(pseudoField, gbc);
+
+        JButton registerButton = new JButton("Register");
+        gbc.gridx = 1;
+        gbc.gridy = 3;
         gbc.anchor = GridBagConstraints.CENTER;
         add(registerButton, gbc);
 
         JButton backButton = new JButton("Back");
         gbc.gridx = 1;
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         gbc.anchor = GridBagConstraints.CENTER;
         add(backButton, gbc);
 
@@ -57,7 +69,8 @@ public class RegisterPanel extends JPanel {
         registerButton.addActionListener(e -> {
             String email = emailField.getText();
             String password = new String(passField.getPassword());
-            registrationService.register(email, password);
+            String pseudo = pseudoField.getText();
+            registrationService.register(email, password, pseudo);
         });
     }
 }

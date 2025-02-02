@@ -1,12 +1,22 @@
+// src/main/java/ui/auth/LoginPanel.java
 package ui.auth;
+
+import service.LoginService;
+import user.UserService;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.function.Consumer;
 
 public class LoginPanel extends JPanel {
+    private final LoginService loginService;
+    private final Runnable onBack;
+    private final Runnable onLogout;
 
-    public LoginPanel(Runnable onBack) {
+    public LoginPanel(UserService userService, Runnable onBack, Consumer<JPanel> onLoginSuccess, Runnable onLogout) {
+        this.loginService = new LoginService(userService);
+        this.onBack = onBack;
+        this.onLogout = onLogout;
         setLayout(new GridBagLayout());
         setBackground(Color.DARK_GRAY);
 
@@ -49,5 +59,10 @@ public class LoginPanel extends JPanel {
         add(backButton, gbc);
 
         backButton.addActionListener(e -> onBack.run());
+        loginButton.addActionListener(e -> {
+            String email = userField.getText();
+            String password = new String(passField.getPassword());
+            loginService.handleLogin(email, password, onLoginSuccess, onLogout);
+        });
     }
 }

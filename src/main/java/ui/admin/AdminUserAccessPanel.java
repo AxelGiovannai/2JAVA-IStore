@@ -1,4 +1,10 @@
+
 package ui.admin;
 
-public class AdminUserAccessPanel {
+import javax.swing.*;
+
+public class AdminUserAccessPanel extends JPanel {
+    public AdminUserAccessPanel() {
+        // Initialize components here
+    }
 }

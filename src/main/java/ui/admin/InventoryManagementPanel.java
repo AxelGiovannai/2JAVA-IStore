@@ -1,4 +1,10 @@
+
 package ui.admin;
 
-public class InventoryManagementPanel {
+import javax.swing.*;
+
+public class InventoryManagementPanel extends JPanel {
+    public InventoryManagementPanel() {
+        // Initialize components here
+    }
 }
