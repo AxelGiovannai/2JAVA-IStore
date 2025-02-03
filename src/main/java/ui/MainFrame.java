@@ -69,7 +69,7 @@ public class MainFrame extends JFrame {
 
     private void showLoginPanel() {
         getContentPane().removeAll();
-        add(new LoginPanel(userService, this::showMainPanel, this::showAdminDashboard, this::showWhitelistManagement, this::showInventoryManagement, this::showStoreManagement, this::showItemManagement, this::showAdminCreateStore, this::showAdminUserAccess, this::showMainPanel), BorderLayout.CENTER);
+        add(new LoginPanel(userService, this::showMainPanel, panel -> showAdminDashboard(), this::showMainPanel, this::showWhitelistManagement, this::showInventoryManagement, this::showStoreManagement, this::showItemManagement, this::showAdminCreateStore, this::showAdminUserAccess), BorderLayout.CENTER);
         revalidate();
         repaint();
     }
