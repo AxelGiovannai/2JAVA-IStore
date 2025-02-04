@@ -38,4 +38,13 @@ public class WhitelistDaoImpl implements WhitelistDao {
             return session.createQuery("FROM WhitelistedEmailEntity", WhitelistedEmailEntity.class).list();
         }
     }
+
+    @Override
+    public void deleteEmail(WhitelistedEmailEntity emailEntity) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.remove(emailEntity);
+            transaction.commit();
+        }
+    }
 }

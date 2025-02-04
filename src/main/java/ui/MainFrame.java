@@ -1,6 +1,8 @@
 // src/main/java/ui/MainFrame.java
 package ui;
 
+import store.StoreService;
+import store.dao.StoreDaoImpl;
 import ui.admin.*;
 import ui.auth.LoginPanel;
 import ui.auth.RegisterPanel;
@@ -82,8 +84,9 @@ public class MainFrame extends JFrame {
     }
 
     private void showWhitelistManagement() {
+        WhitelistService whitelistService = new WhitelistService(new WhitelistDaoImpl(sessionFactory));
         getContentPane().removeAll();
-        add(new WhitelistManagementPanel(this::showAdminDashboard), BorderLayout.CENTER);
+        add(new WhitelistManagementPanel(whitelistService, this::showAdminDashboard), BorderLayout.CENTER);
         revalidate();
         repaint();
     }
@@ -110,15 +113,17 @@ public class MainFrame extends JFrame {
     }
 
     private void showAdminCreateStore() {
+        StoreService storeService = new StoreService(new StoreDaoImpl(sessionFactory));
         getContentPane().removeAll();
-        add(new AdminCreateStorePanel(), BorderLayout.CENTER);
+        add(new AdminCreateStorePanel(storeService, this::showAdminDashboard), BorderLayout.CENTER);
         revalidate();
         repaint();
     }
 
     private void showAdminUserAccess() {
+        StoreService storeService = new StoreService(new StoreDaoImpl(sessionFactory));
         getContentPane().removeAll();
-        add(new AdminUserAccessPanel(), BorderLayout.CENTER);
+        add(new AdminUserAccessPanel(userService, storeService, this::showAdminDashboard), BorderLayout.CENTER);
         revalidate();
         repaint();
     }

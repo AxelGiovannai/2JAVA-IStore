@@ -2,6 +2,7 @@ package user;
 
 import user.dao.UserDao;
 import user.entity.UserEntity;
+import java.util.List;
 
 public class UserService {
     private final UserDao userDao;
@@ -24,5 +25,9 @@ public class UserService {
 
     public void deleteUser(UserEntity user) {
         userDao.delete(user);
+    }
+
+    public List<UserEntity> findAllUsers() {
+        return userDao.findAll();
     }
 }

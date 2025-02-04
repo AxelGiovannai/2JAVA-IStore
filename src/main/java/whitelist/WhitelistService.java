@@ -2,6 +2,7 @@ package whitelist;
 
 import whitelist.dao.WhitelistDao;
 import whitelist.entity.WhitelistedEmailEntity;
+import java.util.List;
 
 public class WhitelistService {
     private final WhitelistDao whitelistDao;
@@ -21,5 +22,18 @@ public class WhitelistService {
 
     public boolean isEmailWhitelisted(String email) {
         return whitelistDao.findByEmail(email) != null;
+    }
+
+    public List<WhitelistedEmailEntity> getAllEmails() {
+        return whitelistDao.getAllEmails();
+    }
+
+    public void deleteEmailFromWhitelist(String email) {
+        WhitelistedEmailEntity emailEntity = whitelistDao.findByEmail(email);
+        if (emailEntity != null) {
+            whitelistDao.deleteEmail(emailEntity);
+        } else {
+            throw new IllegalArgumentException("Email not found in the whitelist");
+        }
     }
 }

@@ -7,6 +7,8 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import user.entity.UserEntity;
 
+import java.util.List;
+
 
 public class UserDaoImpl implements UserDao {
     private final SessionFactory sessionFactory;
@@ -48,6 +50,13 @@ public class UserDaoImpl implements UserDao {
             Transaction transaction = session.beginTransaction();
             session.remove(user);
             transaction.commit();
+        }
+    }
+
+    @Override
+    public List<UserEntity> findAll() {
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery("FROM UserEntity", UserEntity.class).list();
         }
     }
 }
