@@ -3,8 +3,8 @@ package store.dao;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import store.entity.StoreEntity;
+
 import java.util.List;
 
 public class StoreDaoImpl implements StoreDao {
@@ -17,9 +17,9 @@ public class StoreDaoImpl implements StoreDao {
     @Override
     public void save(StoreEntity store) {
         try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = session.beginTransaction();
+            session.beginTransaction();
             session.persist(store);
-            transaction.commit();
+            session.getTransaction().commit();
         }
     }
 
@@ -40,18 +40,32 @@ public class StoreDaoImpl implements StoreDao {
     @Override
     public void update(StoreEntity store) {
         try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = session.beginTransaction();
+            session.beginTransaction();
             session.merge(store);
-            transaction.commit();
+            session.getTransaction().commit();
         }
     }
 
     @Override
     public void delete(StoreEntity store) {
         try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = session.beginTransaction();
+            session.beginTransaction();
             session.remove(store);
-            transaction.commit();
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public void refresh(StoreEntity store) {
+        try (Session session = sessionFactory.openSession()) {
+            session.refresh(store);
+        }
+    }
+
+    @Override
+    public boolean exists(int id) {
+        try (Session session = sessionFactory.openSession()) {
+            return session.get(StoreEntity.class, id) != null;
         }
     }
 }

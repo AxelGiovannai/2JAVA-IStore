@@ -2,6 +2,7 @@
 package store.inventory.dao;
 
 import store.entity.InventoryEntity;
+
 import java.util.List;
 
 public interface InventoryDao {
@@ -10,4 +11,5 @@ public interface InventoryDao {
     List<InventoryEntity> findAll();
     void update(InventoryEntity inventory);
     void delete(InventoryEntity inventory);
+    InventoryEntity findInventoryWithItems(int id);
 }

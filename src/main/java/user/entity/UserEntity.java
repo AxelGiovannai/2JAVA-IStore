@@ -2,6 +2,7 @@
 package user.entity;
 
 import jakarta.persistence.*;
+import store.entity.StoreEntity;
 
 @Entity
 @Table(name = "users")
@@ -23,6 +24,10 @@ public class UserEntity {
     @Column(name = "role", nullable = false)
     private RoleEnum role;
 
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private StoreEntity store;
+
     public UserEntity() {}
 
     public UserEntity(String email, String password, String pseudo, RoleEnum role) {
@@ -32,7 +37,7 @@ public class UserEntity {
         this.role = role;
     }
 
-
+    // Getters and setters
     public int getId() {
         return id;
     }
@@ -71,5 +76,13 @@ public class UserEntity {
 
     public void setRole(RoleEnum role) {
         this.role = role;
+    }
+
+    public StoreEntity getStore() {
+        return store;
+    }
+
+    public void setStore(StoreEntity store) {
+        this.store = store;
     }
 }

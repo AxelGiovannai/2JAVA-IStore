@@ -77,11 +77,11 @@ public class AdminUserAccessPanel extends JPanel {
 
                 if (selectedUserEmail != null && selectedStoreName != null) {
                     UserEntity user = userService.findUserByEmail(selectedUserEmail);
-                    List<StoreEntity> stores = storeService.findAllStores();
-                    for (StoreEntity store : stores) {
-                        if (store.getName().equals(selectedStoreName)) {
-                            // Assign user to store
-                        }
+                    StoreEntity store = storeService.findStoreByName(selectedStoreName);
+                    if (store != null) {
+                        user.setStore(store);
+                        userService.updateUser(user);
+                        loadUsers(); // Refresh the user list
                     }
                 }
             }
@@ -95,9 +95,8 @@ public class AdminUserAccessPanel extends JPanel {
 
                 if (selectedUserEmail != null) {
                     UserEntity user = userService.findUserByEmail(selectedUserEmail);
-                    user.setRole(RoleEnum.EMPLOYEE);
+                    user.setStore(null);
                     userService.updateUser(user);
-                    JOptionPane.showMessageDialog(this, "User unassigned from store and role updated to employee", "Success", JOptionPane.INFORMATION_MESSAGE);
                     loadUsers(); // Refresh the user list
                 }
             }
@@ -112,8 +111,7 @@ public class AdminUserAccessPanel extends JPanel {
                 if (selectedUserEmail != null) {
                     UserEntity user = userService.findUserByEmail(selectedUserEmail);
                     userService.deleteUser(user);
-                    userModel.removeRow(selectedRow);
-                    JOptionPane.showMessageDialog(this, "User deleted", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    loadUsers(); // Refresh the user list
                 }
             }
         });
@@ -124,11 +122,8 @@ public class AdminUserAccessPanel extends JPanel {
         List<UserEntity> users = userService.findAllUsers();
         for (UserEntity user : users) {
             String storeName = "none";
-            if (user.getRole() == RoleEnum.ADMIN) {
-                StoreEntity store = storeService.findStoreById(user.getId());
-                if (store != null) {
-                    storeName = store.getName();
-                }
+            if (user.getStore() != null) {
+                storeName = user.getStore().getName();
             }
             userModel.addRow(new Object[]{user.getEmail(), user.getPseudo(), storeName});
         }

@@ -10,4 +10,6 @@ public interface StoreDao {
     List<StoreEntity> findAll();
     void update(StoreEntity store);
     void delete(StoreEntity store);
+    void refresh(StoreEntity store);
+    boolean exists(int id); // Add this method
 }

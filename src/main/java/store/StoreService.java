@@ -3,6 +3,7 @@ package store;
 
 import store.dao.StoreDao;
 import store.entity.StoreEntity;
+
 import java.util.List;
 
 public class StoreService {
@@ -29,6 +30,19 @@ public class StoreService {
     }
 
     public void deleteStore(StoreEntity store) {
-        storeDao.delete(store);
+        if (storeDao.exists(store.getId())) {
+            storeDao.refresh(store); // Refresh the entity before deletion
+            storeDao.delete(store);
+        }
+    }
+
+    public StoreEntity findStoreByName(String name) {
+        List<StoreEntity> stores = storeDao.findAll();
+        for (StoreEntity store : stores) {
+            if (store.getName().equals(name)) {
+                return store;
+            }
+        }
+        return null;
     }
 }

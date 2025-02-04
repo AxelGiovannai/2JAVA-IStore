@@ -3,6 +3,8 @@ package ui;
 
 import store.StoreService;
 import store.dao.StoreDaoImpl;
+import store.inventory.InventoryService;
+import store.inventory.dao.InventoryDaoImpl;
 import store.item.ItemService;
 import store.item.dao.ItemDaoImpl;
 import ui.admin.*;
@@ -93,19 +95,22 @@ public class MainFrame extends JFrame {
         repaint();
     }
 
+
     private void showStoreManagement() {
         StoreService storeService = new StoreService(new StoreDaoImpl(sessionFactory));
         ItemService itemService = new ItemService(new ItemDaoImpl(sessionFactory));
+        InventoryService inventoryService = new InventoryService(new InventoryDaoImpl(sessionFactory));
         getContentPane().removeAll();
-        add(new StoreManagementPanel(storeService, itemService, this::showAdminDashboard), BorderLayout.CENTER);
+        add(new StoreManagementPanel(storeService, itemService, inventoryService, this::showAdminDashboard), BorderLayout.CENTER);
         revalidate();
         repaint();
     }
 
     private void showAdminCreateStore() {
         StoreService storeService = new StoreService(new StoreDaoImpl(sessionFactory));
+        InventoryService inventoryService = new InventoryService(new InventoryDaoImpl(sessionFactory));
         getContentPane().removeAll();
-        add(new AdminCreateStorePanel(storeService, this::showAdminDashboard), BorderLayout.CENTER);
+        add(new AdminCreateStorePanel(storeService, inventoryService, this::showAdminDashboard), BorderLayout.CENTER);
         revalidate();
         repaint();
     }

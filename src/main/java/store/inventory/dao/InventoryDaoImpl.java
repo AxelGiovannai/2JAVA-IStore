@@ -3,8 +3,8 @@ package store.inventory.dao;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import store.entity.InventoryEntity;
+
 import java.util.List;
 
 public class InventoryDaoImpl implements InventoryDao {
@@ -17,9 +17,9 @@ public class InventoryDaoImpl implements InventoryDao {
     @Override
     public void save(InventoryEntity inventory) {
         try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = session.beginTransaction();
+            session.beginTransaction();
             session.persist(inventory);
-            transaction.commit();
+            session.getTransaction().commit();
         }
     }
 
@@ -40,18 +40,29 @@ public class InventoryDaoImpl implements InventoryDao {
     @Override
     public void update(InventoryEntity inventory) {
         try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = session.beginTransaction();
+            session.beginTransaction();
             session.merge(inventory);
-            transaction.commit();
+            session.getTransaction().commit();
         }
     }
 
     @Override
     public void delete(InventoryEntity inventory) {
         try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = session.beginTransaction();
+            session.beginTransaction();
             session.remove(inventory);
-            transaction.commit();
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public InventoryEntity findInventoryWithItems(int id) {
+        try (Session session = sessionFactory.openSession()) {
+            InventoryEntity inventory = session.get(InventoryEntity.class, id);
+            if (inventory != null) {
+                inventory.getItems().size(); // Initialize the items collection
+            }
+            return inventory;
         }
     }
 }

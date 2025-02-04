@@ -1,8 +1,9 @@
 // src/main/java/store/inventory/InventoryService.java
 package store.inventory;
 
-import store.inventory.dao.InventoryDao;
 import store.entity.InventoryEntity;
+import store.inventory.dao.InventoryDao;
+
 import java.util.List;
 
 public class InventoryService {
@@ -30,5 +31,9 @@ public class InventoryService {
 
     public void deleteInventory(InventoryEntity inventory) {
         inventoryDao.delete(inventory);
+    }
+
+    public InventoryEntity findInventoryWithItems(int id) {
+        return inventoryDao.findInventoryWithItems(id);
     }
 }

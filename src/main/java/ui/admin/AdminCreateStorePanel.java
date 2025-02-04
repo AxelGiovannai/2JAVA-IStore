@@ -3,6 +3,8 @@ package ui.admin;
 
 import store.StoreService;
 import store.entity.StoreEntity;
+import store.inventory.InventoryService;
+import store.entity.InventoryEntity;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,10 +12,12 @@ import java.util.List;
 
 public class AdminCreateStorePanel extends JPanel {
     private final StoreService storeService;
+    private final InventoryService inventoryService;
     private final DefaultListModel<String> storeListModel;
 
-    public AdminCreateStorePanel(StoreService storeService, Runnable showAdminDashboard) {
+    public AdminCreateStorePanel(StoreService storeService, InventoryService inventoryService, Runnable showAdminDashboard) {
         this.storeService = storeService;
+        this.inventoryService = inventoryService;
         this.storeListModel = new DefaultListModel<>();
 
         setLayout(new BorderLayout());
@@ -34,15 +38,15 @@ public class AdminCreateStorePanel extends JPanel {
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JLabel storeLabel = new JLabel("Store Name:");
+        JLabel storeNameLabel = new JLabel("Store Name:");
         gbc.gridx = 0;
         gbc.gridy = 0;
-        addStorePanel.add(storeLabel, gbc);
+        addStorePanel.add(storeNameLabel, gbc);
 
-        JTextField storeField = new JTextField(20);
+        JTextField storeNameField = new JTextField(20);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        addStorePanel.add(storeField, gbc);
+        addStorePanel.add(storeNameField, gbc);
 
         JButton addButton = new JButton("Add Store");
         gbc.gridx = 1;
@@ -58,35 +62,35 @@ public class AdminCreateStorePanel extends JPanel {
 
         // Add store button action
         addButton.addActionListener(e -> {
-            String storeName = storeField.getText();
+            String storeName = storeNameField.getText();
             if (!storeName.isEmpty()) {
-                try {
-                    StoreEntity store = new StoreEntity(storeName);
-                    storeService.saveStore(store);
-                    storeListModel.addElement(storeName);
-                    storeField.setText("");
-                } catch (IllegalArgumentException ex) {
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
+                StoreEntity newStore = new StoreEntity(storeName);
+                storeService.saveStore(newStore);
+
+                // Create default inventory for the new store
+                InventoryEntity newInventory = new InventoryEntity(newStore);
+                inventoryService.saveInventory(newInventory);
+
+                storeListModel.addElement(storeName);
+                storeNameField.setText("");
             }
         });
 
         // Delete store button action
         deleteButton.addActionListener(e -> {
-            String storeName = storeField.getText();
-            if (!storeName.isEmpty()) {
-                try {
-                    List<StoreEntity> stores = storeService.findAllStores();
-                    for (StoreEntity store : stores) {
-                        if (store.getName().equals(storeName)) {
-                            storeService.deleteStore(store);
-                            storeListModel.removeElement(storeName);
-                            storeField.setText("");
-                            break;
+            String selectedStoreName = storeList.getSelectedValue();
+            if (selectedStoreName != null) {
+                List<StoreEntity> stores = storeService.findAllStores();
+                for (StoreEntity store : stores) {
+                    if (store.getName().equals(selectedStoreName)) {
+                        InventoryEntity inventory = store.getInventory();
+                        if (inventory != null) {
+                            inventoryService.deleteInventory(inventory);
                         }
+                        storeService.deleteStore(store);
+                        storeListModel.removeElement(selectedStoreName);
+                        break;
                     }
-                } catch (IllegalArgumentException ex) {
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });

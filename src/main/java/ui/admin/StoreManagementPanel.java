@@ -2,9 +2,11 @@
 package ui.admin;
 
 import store.StoreService;
+import store.entity.InventoryEntity;
 import store.entity.StoreEntity;
 import store.entity.ItemEntity;
 import store.item.ItemService;
+import store.inventory.InventoryService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -14,11 +16,13 @@ import java.util.List;
 public class StoreManagementPanel extends JPanel {
     private final StoreService storeService;
     private final ItemService itemService;
+    private final InventoryService inventoryService;
     private final DefaultTableModel itemModel;
 
-    public StoreManagementPanel(StoreService storeService, ItemService itemService, Runnable showAdminDashboard) {
+    public StoreManagementPanel(StoreService storeService, ItemService itemService, InventoryService inventoryService, Runnable showAdminDashboard) {
         this.storeService = storeService;
         this.itemService = itemService;
+        this.inventoryService = inventoryService;
         this.itemModel = new DefaultTableModel(new Object[]{"Name", "Price", "Stock"}, 0);
 
         setLayout(new BorderLayout());
@@ -217,7 +221,8 @@ public class StoreManagementPanel extends JPanel {
         List<StoreEntity> stores = storeService.findAllStores();
         for (StoreEntity store : stores) {
             if (store.getName().equals(storeName)) {
-                List<ItemEntity> items = store.getInventory().getItems();
+                InventoryEntity inventory = inventoryService.findInventoryWithItems(store.getInventory().getId());
+                List<ItemEntity> items = inventory.getItems();
                 for (ItemEntity item : items) {
                     itemModel.addRow(new Object[]{item.getName(), item.getPrice(), item.getStock()});
                 }
