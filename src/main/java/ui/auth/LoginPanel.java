@@ -11,8 +11,8 @@ import java.util.function.Consumer;
 public class LoginPanel extends JPanel {
     private final LoginService loginService;
 
-    public LoginPanel(UserService userService, Runnable onBack, Consumer<JPanel> onLoginSuccess, Runnable onLogout, Runnable showWhitelistManagement, Runnable showInventoryManagement, Runnable showStoreManagement, Runnable showItemManagement, Runnable showAdminCreateStore, Runnable showAdminUserAccess) {
-        this.loginService = new LoginService(userService, showWhitelistManagement, showInventoryManagement, showStoreManagement, showItemManagement, showAdminCreateStore, showAdminUserAccess);
+    public LoginPanel(UserService userService, Runnable onBack, Consumer<JPanel> onLoginSuccess, Runnable onLogout, Runnable showWhitelistManagement, Runnable showStoreManagement, Runnable showAdminCreateStore, Runnable showAdminUserAccess) {
+        this.loginService = new LoginService(userService, showWhitelistManagement, showStoreManagement, showAdminCreateStore, showAdminUserAccess);
         setLayout(new GridBagLayout());
         setBackground(Color.DARK_GRAY);
 

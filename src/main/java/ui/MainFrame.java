@@ -3,6 +3,8 @@ package ui;
 
 import store.StoreService;
 import store.dao.StoreDaoImpl;
+import store.item.ItemService;
+import store.item.dao.ItemDaoImpl;
 import ui.admin.*;
 import ui.auth.LoginPanel;
 import ui.auth.RegisterPanel;
@@ -25,7 +27,7 @@ public class MainFrame extends JFrame {
         this.sessionFactory = sessionFactory;
         this.userService = new UserService(new UserDaoImpl(sessionFactory));
         setTitle("IStore Application");
-        setSize(800, 600);
+        setSize(900, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
@@ -71,14 +73,14 @@ public class MainFrame extends JFrame {
 
     private void showLoginPanel() {
         getContentPane().removeAll();
-        add(new LoginPanel(userService, this::showMainPanel, panel -> showAdminDashboard(), this::showMainPanel, this::showWhitelistManagement, this::showInventoryManagement, this::showStoreManagement, this::showItemManagement, this::showAdminCreateStore, this::showAdminUserAccess), BorderLayout.CENTER);
+        add(new LoginPanel(userService, this::showMainPanel, panel -> showAdminDashboard(), this::showMainPanel, this::showWhitelistManagement, this::showStoreManagement, this::showAdminCreateStore, this::showAdminUserAccess), BorderLayout.CENTER);
         revalidate();
         repaint();
     }
 
     private void showAdminDashboard() {
         getContentPane().removeAll();
-        add(new AdminDashboardPanel(userService, this::showMainPanel, this::showWhitelistManagement, this::showInventoryManagement, this::showStoreManagement, this::showItemManagement, this::showAdminCreateStore, this::showAdminUserAccess), BorderLayout.CENTER);
+        add(new AdminDashboardPanel(userService, this::showMainPanel, this::showWhitelistManagement, this::showStoreManagement, this::showAdminCreateStore, this::showAdminUserAccess), BorderLayout.CENTER);
         revalidate();
         repaint();
     }
@@ -91,23 +93,11 @@ public class MainFrame extends JFrame {
         repaint();
     }
 
-    private void showInventoryManagement() {
-        getContentPane().removeAll();
-        add(new InventoryManagementPanel(), BorderLayout.CENTER);
-        revalidate();
-        repaint();
-    }
-
     private void showStoreManagement() {
+        StoreService storeService = new StoreService(new StoreDaoImpl(sessionFactory));
+        ItemService itemService = new ItemService(new ItemDaoImpl(sessionFactory));
         getContentPane().removeAll();
-        add(new StoreManagementPanel(), BorderLayout.CENTER);
-        revalidate();
-        repaint();
-    }
-
-    private void showItemManagement() {
-        getContentPane().removeAll();
-        add(new ItemManagementPanel(), BorderLayout.CENTER);
+        add(new StoreManagementPanel(storeService, itemService, this::showAdminDashboard), BorderLayout.CENTER);
         revalidate();
         repaint();
     }

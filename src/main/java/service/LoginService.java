@@ -14,18 +14,14 @@ import java.util.function.Consumer;
 public class LoginService {
     private final UserService userService;
     private final Runnable showWhitelistManagement;
-    private final Runnable showInventoryManagement;
     private final Runnable showStoreManagement;
-    private final Runnable showItemManagement;
     private final Runnable showAdminCreateStore;
     private final Runnable showAdminUserAccess;
 
-    public LoginService(UserService userService, Runnable showWhitelistManagement, Runnable showInventoryManagement, Runnable showStoreManagement, Runnable showItemManagement, Runnable showAdminCreateStore, Runnable showAdminUserAccess) {
+    public LoginService(UserService userService, Runnable showWhitelistManagement, Runnable showStoreManagement, Runnable showAdminCreateStore, Runnable showAdminUserAccess) {
         this.userService = userService;
         this.showWhitelistManagement = showWhitelistManagement;
-        this.showInventoryManagement = showInventoryManagement;
         this.showStoreManagement = showStoreManagement;
-        this.showItemManagement = showItemManagement;
         this.showAdminCreateStore = showAdminCreateStore;
         this.showAdminUserAccess = showAdminUserAccess;
     }
@@ -34,7 +30,7 @@ public class LoginService {
         UserEntity user = userService.findUserByEmail(email);
         if (user != null && BCrypt.verifyer().verify(password.toCharArray(), user.getPassword()).verified) {
             if (user.getRole() == RoleEnum.SUPERADMIN) {
-                onLoginSuccess.accept(new AdminDashboardPanel(userService, onLogout, showWhitelistManagement, showInventoryManagement, showStoreManagement, showItemManagement, showAdminCreateStore, showAdminUserAccess));
+                onLoginSuccess.accept(new AdminDashboardPanel(userService, onLogout, showWhitelistManagement, showStoreManagement, showAdminCreateStore, showAdminUserAccess));
             } else {
                 onLoginSuccess.accept(new UserManagementPanel(userService, onLogout));
             }

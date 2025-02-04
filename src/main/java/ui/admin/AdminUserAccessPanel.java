@@ -8,15 +8,18 @@ import store.StoreService;
 import store.entity.StoreEntity;
 import java.util.List;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class AdminUserAccessPanel extends JPanel {
     private final UserService userService;
     private final StoreService storeService;
+    private final DefaultTableModel userModel;
 
     public AdminUserAccessPanel(UserService userService, StoreService storeService, Runnable showAdminDashboard) {
         this.userService = userService;
         this.storeService = storeService;
+        this.userModel = new DefaultTableModel(new Object[]{"Email", "Pseudo", "Store"}, 0);
 
         setLayout(new BorderLayout());
 
@@ -25,73 +28,114 @@ public class AdminUserAccessPanel extends JPanel {
         backButton.addActionListener(e -> showAdminDashboard.run());
         add(backButton, BorderLayout.SOUTH);
 
-        // User and store selection form
+        // User table
+        JTable userTable = new JTable(userModel);
+        JScrollPane scrollPane = new JScrollPane(userTable);
+        add(scrollPane, BorderLayout.CENTER);
+
+        // User management form
         JPanel formPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JLabel userLabel = new JLabel("Select User:");
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        formPanel.add(userLabel, gbc);
-
-        JComboBox<String> userComboBox = new JComboBox<>();
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        formPanel.add(userComboBox, gbc);
-
         JLabel storeLabel = new JLabel("Select Store:");
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 0;
         formPanel.add(storeLabel, gbc);
 
         JComboBox<String> storeComboBox = new JComboBox<>();
         gbc.gridx = 1;
-        gbc.gridy = 1;
+        gbc.gridy = 0;
         formPanel.add(storeComboBox, gbc);
 
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         JButton assignButton = new JButton("Assign to Store");
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        formPanel.add(assignButton, gbc);
+        JButton unassignButton = new JButton("Unassign from Store");
+        JButton deleteButton = new JButton("Delete User");
+        buttonPanel.add(assignButton);
+        buttonPanel.add(unassignButton);
+        buttonPanel.add(deleteButton);
 
-        add(formPanel, BorderLayout.CENTER);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        formPanel.add(buttonPanel, gbc);
+
+        add(formPanel, BorderLayout.NORTH);
 
         // Load users and stores
-        loadUsers(userComboBox);
+        loadUsers();
         loadStores(storeComboBox);
 
         // Assign button action
         assignButton.addActionListener(e -> {
-            String selectedUserEmail = (String) userComboBox.getSelectedItem();
-            String selectedStoreName = (String) storeComboBox.getSelectedItem();
+            int selectedRow = userTable.getSelectedRow();
+            if (selectedRow != -1) {
+                String selectedUserEmail = (String) userModel.getValueAt(selectedRow, 0);
+                String selectedStoreName = (String) storeComboBox.getSelectedItem();
 
-            if (selectedUserEmail != null && selectedStoreName != null) {
-                UserEntity user = userService.findUserByEmail(selectedUserEmail);
-                List<StoreEntity> stores = storeService.findAllStores();
-                for (StoreEntity store : stores) {
-                    if (store.getName().equals(selectedStoreName)) {
-                        user.setRole(RoleEnum.ADMIN);
-                        userService.updateUser(user);
-                        JOptionPane.showMessageDialog(this, "User assigned to store and role updated to admin", "Success", JOptionPane.INFORMATION_MESSAGE);
-                        break;
+                if (selectedUserEmail != null && selectedStoreName != null) {
+                    UserEntity user = userService.findUserByEmail(selectedUserEmail);
+                    List<StoreEntity> stores = storeService.findAllStores();
+                    for (StoreEntity store : stores) {
+                        if (store.getName().equals(selectedStoreName)) {
+                            // Assign user to store
+                        }
                     }
+                }
+            }
+        });
+
+        // Unassign button action
+        unassignButton.addActionListener(e -> {
+            int selectedRow = userTable.getSelectedRow();
+            if (selectedRow != -1) {
+                String selectedUserEmail = (String) userModel.getValueAt(selectedRow, 0);
+
+                if (selectedUserEmail != null) {
+                    UserEntity user = userService.findUserByEmail(selectedUserEmail);
+                    user.setRole(RoleEnum.EMPLOYEE);
+                    userService.updateUser(user);
+                    JOptionPane.showMessageDialog(this, "User unassigned from store and role updated to employee", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    loadUsers(); // Refresh the user list
+                }
+            }
+        });
+
+        // Delete button action
+        deleteButton.addActionListener(e -> {
+            int selectedRow = userTable.getSelectedRow();
+            if (selectedRow != -1) {
+                String selectedUserEmail = (String) userModel.getValueAt(selectedRow, 0);
+
+                if (selectedUserEmail != null) {
+                    UserEntity user = userService.findUserByEmail(selectedUserEmail);
+                    userService.deleteUser(user);
+                    userModel.removeRow(selectedRow);
+                    JOptionPane.showMessageDialog(this, "User deleted", "Success", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
     }
 
-    private void loadUsers(JComboBox<String> userComboBox) {
+    private void loadUsers() {
+        userModel.setRowCount(0);
         List<UserEntity> users = userService.findAllUsers();
         for (UserEntity user : users) {
-            if (user.getRole() == RoleEnum.EMPLOYEE) {
-                userComboBox.addItem(user.getEmail());
+            String storeName = "none";
+            if (user.getRole() == RoleEnum.ADMIN) {
+                StoreEntity store = storeService.findStoreById(user.getId());
+                if (store != null) {
+                    storeName = store.getName();
+                }
             }
+            userModel.addRow(new Object[]{user.getEmail(), user.getPseudo(), storeName});
         }
     }
 
     private void loadStores(JComboBox<String> storeComboBox) {
+        storeComboBox.removeAllItems();
         List<StoreEntity> stores = storeService.findAllStores();
         for (StoreEntity store : stores) {
             storeComboBox.addItem(store.getName());
