@@ -22,7 +22,7 @@ public class AdminDashboardPanel extends JPanel {
      */
     public AdminDashboardPanel(UserService userService, Runnable onLogout, Runnable showWhitelistManagement, Runnable showStoreManagement, Runnable showAdminCreateStore, Runnable showAdminUserAccess) {
         setLayout(new GridLayout(0, 1));
-
+        System.out.println("ca rentre dans AdminDashboardPanel");
         JButton whitelistButton = new JButton("Manage Whitelist");
         whitelistButton.addActionListener(e -> showWhitelistManagement.run());
         add(whitelistButton);

@@ -1,4 +1,5 @@
 package ui.user;
+
 import user.UserService;
 import user.entity.UserEntity;
 
@@ -18,7 +19,7 @@ public class UserManagementPanel extends JPanel {
         this.onLogout = onLogout;
 
         setLayout(new BorderLayout());
-        System.out.println("ca rentre dans UserManagementPanel" );
+        System.out.println("ca rentre dans UserManagementPanel");
         JPanel userInfoPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
@@ -45,12 +46,7 @@ public class UserManagementPanel extends JPanel {
         inventoryButton.addActionListener(e -> showInventoryViewPanel.run());
         buttonPanel.add(inventoryButton, gbc);
 
-        JButton logoutButton = new JButton("Logout");
-        logoutButton.addActionListener(e -> onLogout.run());
         gbc.gridy = 1;
-        buttonPanel.add(logoutButton, gbc);
-
-        gbc.gridy = 2;
         gbc.gridwidth = 1;
         JLabel newPseudoLabel = new JLabel("New Pseudo:");
         buttonPanel.add(newPseudoLabel, gbc);
@@ -60,7 +56,7 @@ public class UserManagementPanel extends JPanel {
         buttonPanel.add(newPseudoField, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 2;
         JButton changePseudoButton = new JButton("Change Pseudo");
         changePseudoButton.addActionListener(e -> {
             String newPseudo = newPseudoField.getText();
@@ -73,7 +69,7 @@ public class UserManagementPanel extends JPanel {
         buttonPanel.add(changePseudoButton, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy = 3;
         JLabel newPasswordLabel = new JLabel("New Password:");
         buttonPanel.add(newPasswordLabel, gbc);
 
@@ -82,7 +78,7 @@ public class UserManagementPanel extends JPanel {
         buttonPanel.add(newPasswordField, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 5;
+        gbc.gridy = 4;
         JButton changePasswordButton = new JButton("Change Password");
         changePasswordButton.addActionListener(e -> {
             String newPassword = new String(newPasswordField.getPassword());
@@ -93,14 +89,13 @@ public class UserManagementPanel extends JPanel {
         });
         buttonPanel.add(changePasswordButton, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridwidth = 2;
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(e -> onLogout.run());
+        buttonPanel.add(logoutButton, gbc);
+
         add(buttonPanel, BorderLayout.SOUTH);
     }
 }
-
-
-
-
-
-
-
-

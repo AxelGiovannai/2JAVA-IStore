@@ -51,43 +51,96 @@ public class InventoryViewPanel extends JPanel {
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JLabel priceLabel = new JLabel("New Price:");
+        JLabel itemNameLabel = new JLabel("Item Name:");
         gbc.gridx = 0;
         gbc.gridy = 0;
+        managePanel.add(itemNameLabel, gbc);
+
+        JTextField itemNameField = new JTextField(10);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        managePanel.add(itemNameField, gbc);
+
+        JLabel itemPriceLabel = new JLabel("Item Price:");
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        managePanel.add(itemPriceLabel, gbc);
+
+        JTextField itemPriceField = new JTextField(10);
+        gbc.gridx = 3;
+        gbc.gridy = 0;
+        managePanel.add(itemPriceField, gbc);
+
+        JLabel itemQuantityLabel = new JLabel("Item Quantity:");
+        gbc.gridx = 4;
+        gbc.gridy = 0;
+        managePanel.add(itemQuantityLabel, gbc);
+
+        JTextField itemQuantityField = new JTextField(10);
+        gbc.gridx = 5;
+        gbc.gridy = 0;
+        managePanel.add(itemQuantityField, gbc);
+
+        JButton addItemButton = new JButton("Add Item");
+        gbc.gridx = 6;
+        gbc.gridy = 0;
+        managePanel.add(addItemButton, gbc);
+
+        JLabel priceLabel = new JLabel("New Price:");
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         managePanel.add(priceLabel, gbc);
 
         JTextField priceField = new JTextField(10);
         gbc.gridx = 1;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         managePanel.add(priceField, gbc);
 
         JButton updatePriceButton = new JButton("Update Price");
         gbc.gridx = 2;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         managePanel.add(updatePriceButton, gbc);
 
         JLabel stockLabel = new JLabel("New Stock:");
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         managePanel.add(stockLabel, gbc);
 
         JTextField stockField = new JTextField(10);
         gbc.gridx = 1;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         managePanel.add(stockField, gbc);
 
         JButton updateStockButton = new JButton("Update Stock");
         gbc.gridx = 2;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         managePanel.add(updateStockButton, gbc);
 
         JButton backButton = new JButton("Back");
         gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 3;
+        gbc.gridy = 3;
+        gbc.gridwidth = 7;
         managePanel.add(backButton, gbc);
 
         add(managePanel, BorderLayout.SOUTH);
+
+        addItemButton.addActionListener(e -> {
+            String itemName = itemNameField.getText();
+            String itemPriceText = itemPriceField.getText();
+            String itemQuantityText = itemQuantityField.getText();
+            if (!itemName.isEmpty() && !itemPriceText.isEmpty() && !itemQuantityText.isEmpty()) {
+                try {
+                    double itemPrice = Double.parseDouble(itemPriceText);
+                    int itemQuantity = Integer.parseInt(itemQuantityText);
+                    addItem(itemName, itemPrice, itemQuantity);
+                    loadItems();
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "Invalid price or quantity format", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "All fields must be filled", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
 
         updatePriceButton.addActionListener(e -> {
             int selectedRow = itemTable.getSelectedRow();
@@ -136,6 +189,19 @@ public class InventoryViewPanel extends JPanel {
         for (ItemEntity item : items) {
             itemModel.addRow(new Object[]{item.getName(), item.getPrice(), item.getStock()});
         }
+    }
+
+    /**
+     * Adds a new item to the inventory.
+     *
+     * @param itemName the name of the item
+     * @param itemPrice the price of the item
+     * @param itemQuantity the quantity of the item
+     */
+    private void addItem(String itemName, double itemPrice, int itemQuantity) {
+        InventoryEntity inventory = inventoryService.findInventoryWithItems(currentUser.getStore().getInventory().getId());
+        ItemEntity item = new ItemEntity(itemName, itemPrice, itemQuantity, inventory);
+        itemService.saveItem(item);
     }
 
     /**

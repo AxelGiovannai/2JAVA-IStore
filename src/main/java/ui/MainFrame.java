@@ -85,6 +85,13 @@ public class MainFrame extends JFrame {
         this.currentUser = user;
     }
 
+    public void showPanel(JPanel panel) {
+        getContentPane().removeAll();
+        add(panel, BorderLayout.CENTER);
+        revalidate();
+        repaint();
+    }
+
     private void showRegisterPanel() {
         WhitelistService whitelistService = new WhitelistService(new WhitelistDaoImpl(sessionFactory));
         getContentPane().removeAll();

@@ -74,11 +74,13 @@ public class LoginPanel extends JPanel {
         gbc.anchor = GridBagConstraints.CENTER;
         add(backButton, gbc);
 
-        backButton.addActionListener(e -> onBack.run());
         loginButton.addActionListener(e -> {
             String email = emailField.getText();
             String password = new String(passField.getPassword());
-            loginService.handleLogin(email, password, onLoginSuccess, onLogout);
+            loginService.handleLogin(email, password, panel -> {
+                mainFrame.setCurrentUser(userService.findUserByEmail(email));
+                mainFrame.showPanel(panel);
+            }, onLogout);
         });
     }
 }
