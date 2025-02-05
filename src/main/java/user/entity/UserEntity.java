@@ -1,9 +1,11 @@
-// src/main/java/user/entity/UserEntity.java
 package user.entity;
 
 import jakarta.persistence.*;
 import store.entity.StoreEntity;
 
+/**
+ * Represents a user entity.
+ */
 @Entity
 @Table(name = "users")
 public class UserEntity {
@@ -11,7 +13,7 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "password", nullable = false)
@@ -37,7 +39,6 @@ public class UserEntity {
         this.role = role;
     }
 
-    // Getters and setters
     public int getId() {
         return id;
     }

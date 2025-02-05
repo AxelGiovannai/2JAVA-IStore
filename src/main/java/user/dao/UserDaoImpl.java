@@ -1,6 +1,5 @@
 package user.dao;
 
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -9,10 +8,17 @@ import user.entity.UserEntity;
 
 import java.util.List;
 
-
+/**
+ * Implementation of the UserDao interface for user data access operations.
+ */
 public class UserDaoImpl implements UserDao {
     private final SessionFactory sessionFactory;
 
+    /**
+     * Constructs a UserDaoImpl with the specified session factory.
+     *
+     * @param sessionFactory the session factory
+     */
     public UserDaoImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }

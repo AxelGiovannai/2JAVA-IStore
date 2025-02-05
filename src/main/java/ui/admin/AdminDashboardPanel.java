@@ -1,4 +1,3 @@
-// src/main/java/ui/admin/AdminDashboardPanel.java
 package ui.admin;
 
 import user.UserService;
@@ -6,8 +5,21 @@ import user.UserService;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Panel for the admin dashboard interface.
+ */
 public class AdminDashboardPanel extends JPanel {
 
+    /**
+     * Constructs a new AdminDashboardPanel.
+     *
+     * @param userService the user service
+     * @param onLogout the runnable to execute on logout
+     * @param showWhitelistManagement the runnable to show whitelist management
+     * @param showStoreManagement the runnable to show store management
+     * @param showAdminCreateStore the runnable to show admin create store
+     * @param showAdminUserAccess the runnable to show admin user access
+     */
     public AdminDashboardPanel(UserService userService, Runnable onLogout, Runnable showWhitelistManagement, Runnable showStoreManagement, Runnable showAdminCreateStore, Runnable showAdminUserAccess) {
         setLayout(new GridLayout(0, 1));
 

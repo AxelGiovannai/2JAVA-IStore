@@ -1,4 +1,3 @@
-// src/main/java/ui/admin/StoreManagementPanel.java
 package ui.admin;
 
 import store.StoreService;
@@ -13,12 +12,23 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * Panel for managing stores and their items in the admin interface.
+ */
 public class StoreManagementPanel extends JPanel {
     private final StoreService storeService;
     private final ItemService itemService;
     private final InventoryService inventoryService;
     private final DefaultTableModel itemModel;
 
+    /**
+     * Constructs a new StoreManagementPanel.
+     *
+     * @param storeService the store service
+     * @param itemService the item service
+     * @param inventoryService the inventory service
+     * @param showAdminDashboard the runnable to show the admin dashboard
+     */
     public StoreManagementPanel(StoreService storeService, ItemService itemService, InventoryService inventoryService, Runnable showAdminDashboard) {
         this.storeService = storeService;
         this.itemService = itemService;
@@ -27,7 +37,6 @@ public class StoreManagementPanel extends JPanel {
 
         setLayout(new BorderLayout());
 
-        // Store selection
         JPanel storePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
         JLabel storeLabel = new JLabel("Select Store:");
         JComboBox<String> storeComboBox = new JComboBox<>();
@@ -35,18 +44,15 @@ public class StoreManagementPanel extends JPanel {
         storePanel.add(storeComboBox);
         add(storePanel, BorderLayout.NORTH);
 
-        // Item table
         JTable itemTable = new JTable(itemModel);
         JScrollPane scrollPane = new JScrollPane(itemTable);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Management panel
         JPanel managePanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // First row: New Price and New Stock
         JLabel priceLabel = new JLabel("New Price:");
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -85,7 +91,6 @@ public class StoreManagementPanel extends JPanel {
         gbc.gridwidth = 1;
         managePanel.add(updateStockButton, gbc);
 
-        // Second row: Add Item and Delete Item
         JLabel itemNameLabel = new JLabel("Item Name:");
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -137,7 +142,6 @@ public class StoreManagementPanel extends JPanel {
         gbc.gridwidth = 1;
         managePanel.add(deleteItemButton, gbc);
 
-        // Back button panel
         JPanel backPanel = new JPanel(new GridBagLayout());
         JButton backButton = new JButton("Back to Dashboard");
         gbc.gridx = 0;
@@ -147,17 +151,14 @@ public class StoreManagementPanel extends JPanel {
         backPanel.add(backButton, gbc);
         backButton.addActionListener(e -> showAdminDashboard.run());
 
-        // Combine managePanel and backPanel
         JPanel southPanel = new JPanel(new BorderLayout());
         southPanel.add(managePanel, BorderLayout.CENTER);
         southPanel.add(backPanel, BorderLayout.SOUTH);
 
         add(southPanel, BorderLayout.SOUTH);
 
-        // Load stores
         loadStores(storeComboBox);
 
-        // Store selection action
         storeComboBox.addActionListener(e -> {
             String selectedStore = (String) storeComboBox.getSelectedItem();
             if (selectedStore != null) {
@@ -165,7 +166,6 @@ public class StoreManagementPanel extends JPanel {
             }
         });
 
-        // Update price action
         updatePriceButton.addActionListener(e -> {
             int selectedRow = itemTable.getSelectedRow();
             if (selectedRow != -1) {
@@ -176,7 +176,6 @@ public class StoreManagementPanel extends JPanel {
             }
         });
 
-        // Update stock action
         updateStockButton.addActionListener(e -> {
             int selectedRow = itemTable.getSelectedRow();
             if (selectedRow != -1) {
@@ -187,7 +186,6 @@ public class StoreManagementPanel extends JPanel {
             }
         });
 
-        // Add item action
         addItemButton.addActionListener(e -> {
             String storeName = (String) storeComboBox.getSelectedItem();
             String itemName = itemNameField.getText();
@@ -197,7 +195,6 @@ public class StoreManagementPanel extends JPanel {
             loadItems(storeName);
         });
 
-        // Delete item action
         deleteItemButton.addActionListener(e -> {
             int selectedRow = itemTable.getSelectedRow();
             if (selectedRow != -1) {
@@ -208,6 +205,11 @@ public class StoreManagementPanel extends JPanel {
         });
     }
 
+    /**
+     * Loads existing stores into the combo box.
+     *
+     * @param storeComboBox the combo box to load stores into
+     */
     private void loadStores(JComboBox<String> storeComboBox) {
         storeComboBox.removeAllItems();
         List<StoreEntity> stores = storeService.findAllStores();
@@ -216,6 +218,11 @@ public class StoreManagementPanel extends JPanel {
         }
     }
 
+    /**
+     * Loads items of the selected store into the table model.
+     *
+     * @param storeName the name of the selected store
+     */
     private void loadItems(String storeName) {
         itemModel.setRowCount(0);
         List<StoreEntity> stores = storeService.findAllStores();
@@ -230,6 +237,12 @@ public class StoreManagementPanel extends JPanel {
         }
     }
 
+    /**
+     * Updates the price of an item.
+     *
+     * @param itemName the name of the item
+     * @param newPrice the new price of the item
+     */
     private void updateItemPrice(String itemName, double newPrice) {
         List<ItemEntity> items = itemService.findAllItems();
         for (ItemEntity item : items) {
@@ -241,6 +254,12 @@ public class StoreManagementPanel extends JPanel {
         }
     }
 
+    /**
+     * Updates the stock of an item.
+     *
+     * @param itemName the name of the item
+     * @param newStock the new stock of the item
+     */
     private void updateItemStock(String itemName, int newStock) {
         List<ItemEntity> items = itemService.findAllItems();
         for (ItemEntity item : items) {
@@ -252,6 +271,14 @@ public class StoreManagementPanel extends JPanel {
         }
     }
 
+    /**
+     * Adds a new item to the store's inventory.
+     *
+     * @param storeName the name of the store
+     * @param itemName the name of the item
+     * @param itemPrice the price of the item
+     * @param itemStock the stock of the item
+     */
     private void addItem(String storeName, String itemName, double itemPrice, int itemStock) {
         List<StoreEntity> stores = storeService.findAllStores();
         for (StoreEntity store : stores) {
@@ -263,6 +290,11 @@ public class StoreManagementPanel extends JPanel {
         }
     }
 
+    /**
+     * Deletes an item from the store's inventory.
+     *
+     * @param itemName the name of the item
+     */
     private void deleteItem(String itemName) {
         List<ItemEntity> items = itemService.findAllItems();
         for (ItemEntity item : items) {

@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
                                      email VARCHAR(255) NOT NULL UNIQUE,
                                      password VARCHAR(255) NOT NULL,
                                      pseudo VARCHAR(100) NOT NULL,
-                                     role ENUM('admin', 'employee') NOT NULL DEFAULT 'employee'
+                                     role ENUM('superadmin','admin', 'employee') NOT NULL DEFAULT 'employee'
 );
 
 CREATE TABLE IF NOT EXISTS whitelist (

@@ -1,12 +1,22 @@
 package app;
 
-import javax.swing.SwingUtilities;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import ui.MainFrame;
 
+import javax.swing.SwingUtilities;
+
+/**
+ * Main class for the application.
+ */
 public class Main {
+
+    /**
+     * Main method to start the application.
+     *
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
         SessionFactory sessionFactory = null;
 
@@ -21,7 +31,6 @@ public class Main {
             System.err.println("Erreur lors de la connexion à la base de données : " + e.getMessage());
             e.printStackTrace();
         }
-
 
         SessionFactory finalSessionFactory = sessionFactory;
         SwingUtilities.invokeLater(() -> {

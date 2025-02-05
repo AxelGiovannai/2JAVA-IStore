@@ -1,4 +1,3 @@
-// src/main/java/ui/admin/AdminUserAccessPanel.java
 package ui.admin;
 
 import user.UserService;
@@ -11,11 +10,21 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
+/**
+ * Panel for managing user access in the admin interface.
+ */
 public class AdminUserAccessPanel extends JPanel {
     private final UserService userService;
     private final StoreService storeService;
     private final DefaultTableModel userModel;
 
+    /**
+     * Constructs a new AdminUserAccessPanel.
+     *
+     * @param userService the user service
+     * @param storeService the store service
+     * @param showAdminDashboard the runnable to show the admin dashboard
+     */
     public AdminUserAccessPanel(UserService userService, StoreService storeService, Runnable showAdminDashboard) {
         this.userService = userService;
         this.storeService = storeService;
@@ -23,17 +32,14 @@ public class AdminUserAccessPanel extends JPanel {
 
         setLayout(new BorderLayout());
 
-        // Back button
         JButton backButton = new JButton("Back to Dashboard");
         backButton.addActionListener(e -> showAdminDashboard.run());
         add(backButton, BorderLayout.SOUTH);
 
-        // User table
         JTable userTable = new JTable(userModel);
         JScrollPane scrollPane = new JScrollPane(userTable);
         add(scrollPane, BorderLayout.CENTER);
 
-        // User management form
         JPanel formPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -64,11 +70,6 @@ public class AdminUserAccessPanel extends JPanel {
 
         add(formPanel, BorderLayout.NORTH);
 
-        // Load users and stores
-        loadUsers();
-        loadStores(storeComboBox);
-
-        // Assign button action
         assignButton.addActionListener(e -> {
             int selectedRow = userTable.getSelectedRow();
             if (selectedRow != -1) {
@@ -81,13 +82,12 @@ public class AdminUserAccessPanel extends JPanel {
                     if (store != null) {
                         user.setStore(store);
                         userService.updateUser(user);
-                        loadUsers(); // Refresh the user list
+                        loadUsers();
                     }
                 }
             }
         });
 
-        // Unassign button action
         unassignButton.addActionListener(e -> {
             int selectedRow = userTable.getSelectedRow();
             if (selectedRow != -1) {
@@ -97,12 +97,11 @@ public class AdminUserAccessPanel extends JPanel {
                     UserEntity user = userService.findUserByEmail(selectedUserEmail);
                     user.setStore(null);
                     userService.updateUser(user);
-                    loadUsers(); // Refresh the user list
+                    loadUsers();
                 }
             }
         });
 
-        // Delete button action
         deleteButton.addActionListener(e -> {
             int selectedRow = userTable.getSelectedRow();
             if (selectedRow != -1) {
@@ -111,12 +110,18 @@ public class AdminUserAccessPanel extends JPanel {
                 if (selectedUserEmail != null) {
                     UserEntity user = userService.findUserByEmail(selectedUserEmail);
                     userService.deleteUser(user);
-                    loadUsers(); // Refresh the user list
+                    loadUsers();
                 }
             }
         });
+
+        loadUsers();
+        loadStores(storeComboBox);
     }
 
+    /**
+     * Loads existing users into the table model.
+     */
     private void loadUsers() {
         userModel.setRowCount(0);
         List<UserEntity> users = userService.findAllUsers();
@@ -129,6 +134,11 @@ public class AdminUserAccessPanel extends JPanel {
         }
     }
 
+    /**
+     * Loads existing stores into the combo box.
+     *
+     * @param storeComboBox the combo box to load stores into
+     */
     private void loadStores(JComboBox<String> storeComboBox) {
         storeComboBox.removeAllItems();
         List<StoreEntity> stores = storeService.findAllStores();

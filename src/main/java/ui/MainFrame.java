@@ -1,4 +1,3 @@
-// src/main/java/ui/MainFrame.java
 package ui;
 
 import store.StoreService;
@@ -10,8 +9,11 @@ import store.item.dao.ItemDaoImpl;
 import ui.admin.*;
 import ui.auth.LoginPanel;
 import ui.auth.RegisterPanel;
+import ui.user.InventoryViewPanel;
+import ui.user.UserManagementPanel;
 import user.UserService;
 import user.dao.UserDaoImpl;
+import user.entity.UserEntity;
 import whitelist.WhitelistService;
 import whitelist.dao.WhitelistDaoImpl;
 import org.hibernate.SessionFactory;
@@ -20,11 +22,20 @@ import org.hibernate.cfg.Configuration;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Main frame of the application.
+ */
 public class MainFrame extends JFrame {
 
     private final SessionFactory sessionFactory;
     private final UserService userService;
+    private UserEntity currentUser;
 
+    /**
+     * Constructs a MainFrame.
+     *
+     * @param sessionFactory the session factory
+     */
     public MainFrame(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
         this.userService = new UserService(new UserDaoImpl(sessionFactory));
@@ -41,7 +52,7 @@ public class MainFrame extends JFrame {
         getContentPane().removeAll();
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new GridBagLayout());
-        mainPanel.setBackground(Color.DARK_GRAY);
+        mainPanel.setBackground(Color.WHITE);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
@@ -65,6 +76,15 @@ public class MainFrame extends JFrame {
         repaint();
     }
 
+    /**
+     * Sets the current user.
+     *
+     * @param user the current user
+     */
+    public void setCurrentUser(UserEntity user) {
+        this.currentUser = user;
+    }
+
     private void showRegisterPanel() {
         WhitelistService whitelistService = new WhitelistService(new WhitelistDaoImpl(sessionFactory));
         getContentPane().removeAll();
@@ -74,8 +94,10 @@ public class MainFrame extends JFrame {
     }
 
     private void showLoginPanel() {
+        ItemService itemService = new ItemService(new ItemDaoImpl(sessionFactory));
+        InventoryService inventoryService = new InventoryService(new InventoryDaoImpl(sessionFactory));
         getContentPane().removeAll();
-        add(new LoginPanel(userService, this::showMainPanel, panel -> showAdminDashboard(), this::showMainPanel, this::showWhitelistManagement, this::showStoreManagement, this::showAdminCreateStore, this::showAdminUserAccess), BorderLayout.CENTER);
+        add(new LoginPanel(userService, this::showMainPanel, panel -> showAdminDashboard(), this::showMainPanel, this::showWhitelistManagement, this::showStoreManagement, this::showAdminCreateStore, this::showAdminUserAccess, this::showUserManagementPanel, itemService, inventoryService, this::showInventoryViewPanel, this), BorderLayout.CENTER);
         revalidate();
         repaint();
     }
@@ -94,7 +116,6 @@ public class MainFrame extends JFrame {
         revalidate();
         repaint();
     }
-
 
     private void showStoreManagement() {
         StoreService storeService = new StoreService(new StoreDaoImpl(sessionFactory));
@@ -123,6 +144,38 @@ public class MainFrame extends JFrame {
         repaint();
     }
 
+    /**
+     * Shows the user management panel.
+     */
+    public void showUserManagementPanel() {
+        if (currentUser != null) {
+            getContentPane().removeAll();
+            add(new UserManagementPanel(userService, currentUser, this::showInventoryViewPanel, this::showLoginPanel), BorderLayout.CENTER);
+            revalidate();
+            repaint();
+        }
+    }
+
+    /**
+     * Shows the inventory view panel.
+     */
+    public void showInventoryViewPanel() {
+        if (currentUser != null && currentUser.getStore() != null) {
+            StoreService storeService = new StoreService(new StoreDaoImpl(sessionFactory));
+            InventoryService inventoryService = new InventoryService(new InventoryDaoImpl(sessionFactory));
+            ItemService itemService = new ItemService(new ItemDaoImpl(sessionFactory));
+            getContentPane().removeAll();
+            add(new InventoryViewPanel(userService, itemService, inventoryService, currentUser, this::showUserManagementPanel), BorderLayout.CENTER);
+            revalidate();
+            repaint();
+        }
+    }
+
+    /**
+     * Main method to start the application.
+     *
+     * @param args the command line arguments
+     */
     public static void main(String[] args) {
         SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
         SwingUtilities.invokeLater(() -> {

@@ -1,4 +1,3 @@
-// src/main/java/ui/auth/RegisterPanel.java
 package ui.auth;
 
 import service.RegistrationService;
@@ -8,20 +7,29 @@ import whitelist.WhitelistService;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Panel for user registration in the authentication interface.
+ */
 public class RegisterPanel extends JPanel {
     private final RegistrationService registrationService;
 
+    /**
+     * Constructs a new RegisterPanel.
+     *
+     * @param whitelistService the whitelist service
+     * @param onBack the runnable to execute on back action
+     * @param userService the user service
+     */
     public RegisterPanel(WhitelistService whitelistService, Runnable onBack, UserService userService) {
         this.registrationService = new RegistrationService(whitelistService, userService);
         setLayout(new GridBagLayout());
-        setBackground(Color.DARK_GRAY);
+        setBackground(Color.WHITE);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         JLabel emailLabel = new JLabel("Email:");
-        emailLabel.setForeground(Color.WHITE);
         gbc.gridx = 0;
         gbc.gridy = 0;
         add(emailLabel, gbc);
@@ -32,7 +40,6 @@ public class RegisterPanel extends JPanel {
         add(emailField, gbc);
 
         JLabel passLabel = new JLabel("Password:");
-        passLabel.setForeground(Color.WHITE);
         gbc.gridx = 0;
         gbc.gridy = 1;
         add(passLabel, gbc);
@@ -43,7 +50,6 @@ public class RegisterPanel extends JPanel {
         add(passField, gbc);
 
         JLabel pseudoLabel = new JLabel("Pseudo:");
-        pseudoLabel.setForeground(Color.WHITE);
         gbc.gridx = 0;
         gbc.gridy = 2;
         add(pseudoLabel, gbc);

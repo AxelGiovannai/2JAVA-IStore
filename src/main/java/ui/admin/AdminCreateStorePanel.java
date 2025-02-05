@@ -1,4 +1,3 @@
-// src/main/java/ui/admin/AdminCreateStorePanel.java
 package ui.admin;
 
 import store.StoreService;
@@ -10,11 +9,21 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * Panel for creating and managing stores in the admin interface.
+ */
 public class AdminCreateStorePanel extends JPanel {
     private final StoreService storeService;
     private final InventoryService inventoryService;
     private final DefaultListModel<String> storeListModel;
 
+    /**
+     * Constructs a new AdminCreateStorePanel.
+     *
+     * @param storeService the store service
+     * @param inventoryService the inventory service
+     * @param showAdminDashboard the runnable to show the admin dashboard
+     */
     public AdminCreateStorePanel(StoreService storeService, InventoryService inventoryService, Runnable showAdminDashboard) {
         this.storeService = storeService;
         this.inventoryService = inventoryService;
@@ -22,17 +31,14 @@ public class AdminCreateStorePanel extends JPanel {
 
         setLayout(new BorderLayout());
 
-        // Back button
         JButton backButton = new JButton("Back to Dashboard");
         backButton.addActionListener(e -> showAdminDashboard.run());
         add(backButton, BorderLayout.SOUTH);
 
-        // Store list
         JList<String> storeList = new JList<>(storeListModel);
         JScrollPane scrollPane = new JScrollPane(storeList);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Add store form
         JPanel addStorePanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -60,14 +66,12 @@ public class AdminCreateStorePanel extends JPanel {
 
         add(addStorePanel, BorderLayout.NORTH);
 
-        // Add store button action
         addButton.addActionListener(e -> {
             String storeName = storeNameField.getText();
             if (!storeName.isEmpty()) {
                 StoreEntity newStore = new StoreEntity(storeName);
                 storeService.saveStore(newStore);
 
-                // Create default inventory for the new store
                 InventoryEntity newInventory = new InventoryEntity(newStore);
                 inventoryService.saveInventory(newInventory);
 
@@ -76,7 +80,6 @@ public class AdminCreateStorePanel extends JPanel {
             }
         });
 
-        // Delete store button action
         deleteButton.addActionListener(e -> {
             String selectedStoreName = storeList.getSelectedValue();
             if (selectedStoreName != null) {
@@ -95,10 +98,12 @@ public class AdminCreateStorePanel extends JPanel {
             }
         });
 
-        // Load existing stores
         loadStores();
     }
 
+    /**
+     * Loads existing stores into the list model.
+     */
     private void loadStores() {
         List<StoreEntity> stores = storeService.findAllStores();
         for (StoreEntity store : stores) {

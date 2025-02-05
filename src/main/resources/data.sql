@@ -1,2 +1,2 @@
 INSERT INTO whitelist (email) VALUES ('admin@admin.com');
-INSERT INTO users (email, password, pseudo, role) VALUES ('admin@admin.com', 'AdminPassword', 'admin', 'admin');
+INSERT INTO users (email, password, pseudo, role) VALUES ('admin@admin.com', '$2a$12$yxnaNc0K2M3T09ODFaPwe.llhe0SaLG.ILLsrAuox01nVUsQApE9.', 'admin', 'superadmin');

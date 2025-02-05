@@ -1,4 +1,3 @@
-// src/main/java/ui/admin/WhitelistManagementPanel.java
 package ui.admin;
 
 import whitelist.WhitelistService;
@@ -8,27 +7,33 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * Panel for managing the whitelist in the admin interface.
+ */
 public class WhitelistManagementPanel extends JPanel {
     private final WhitelistService whitelistService;
     private final DefaultListModel<String> emailListModel;
 
+    /**
+     * Constructs a new WhitelistManagementPanel.
+     *
+     * @param whitelistService the whitelist service
+     * @param showAdminDashboard the runnable to show the admin dashboard
+     */
     public WhitelistManagementPanel(WhitelistService whitelistService, Runnable showAdminDashboard) {
         this.whitelistService = whitelistService;
         this.emailListModel = new DefaultListModel<>();
 
         setLayout(new BorderLayout());
 
-        // Back button
         JButton backButton = new JButton("Back to Dashboard");
         backButton.addActionListener(e -> showAdminDashboard.run());
         add(backButton, BorderLayout.SOUTH);
 
-        // Email list
         JList<String> emailList = new JList<>(emailListModel);
         JScrollPane scrollPane = new JScrollPane(emailList);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Add email form
         JPanel addEmailPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -56,7 +61,6 @@ public class WhitelistManagementPanel extends JPanel {
 
         add(addEmailPanel, BorderLayout.NORTH);
 
-        // Add email button action
         addButton.addActionListener(e -> {
             String email = emailField.getText();
             if (!email.isEmpty()) {
@@ -70,7 +74,6 @@ public class WhitelistManagementPanel extends JPanel {
             }
         });
 
-        // Delete email button action
         deleteButton.addActionListener(e -> {
             String email = emailField.getText();
             if (!email.isEmpty()) {
@@ -84,10 +87,12 @@ public class WhitelistManagementPanel extends JPanel {
             }
         });
 
-        // Load existing emails
         loadEmails();
     }
 
+    /**
+     * Loads existing emails into the list model.
+     */
     private void loadEmails() {
         List<WhitelistedEmailEntity> emails = whitelistService.getAllEmails();
         for (WhitelistedEmailEntity emailEntity : emails) {

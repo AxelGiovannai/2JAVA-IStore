@@ -7,9 +7,17 @@ import org.hibernate.query.Query;
 import whitelist.entity.WhitelistedEmailEntity;
 import java.util.List;
 
+/**
+ * Implementation of the WhitelistDao interface for whitelist data access operations.
+ */
 public class WhitelistDaoImpl implements WhitelistDao {
     private final SessionFactory sessionFactory;
 
+    /**
+     * Constructs a WhitelistDaoImpl with the specified session factory.
+     *
+     * @param sessionFactory the session factory
+     */
     public WhitelistDaoImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
